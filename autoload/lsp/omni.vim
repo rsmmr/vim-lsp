@@ -278,6 +278,7 @@ function! lsp#omni#get_vim_completion_items(options) abort
     let l:default_startcol = s:get_startcol(strcharpart(l:current_line, 0, l:complete_position['character']), [l:server_name])
     let l:default_start_character = strchars(strpart(l:current_line, 0, l:default_startcol - 1))
     let l:refresh_pattern = s:get_refresh_pattern([l:server_name])
+    let l:prefix = matchstr(strpart(l:current_line, 0, l:complete_position['character']), l:refresh_pattern)
 
     let l:result = a:options['response']['result']
     if type(l:result) == type([])
@@ -339,6 +340,11 @@ function! lsp#omni#get_vim_completion_items(options) abort
         else
             let l:vim_complete_item['word'] = l:complete_word
             let l:vim_complete_item['abbr'] = l:completion_item['label']
+        endif
+
+        let l:word = l:vim_complete_item['word']
+        if len(l:prefix) > 0 && l:word[0:len(l:prefix)-1] != l:prefix
+            let l:vim_complete_item['word'] = l:prefix . l:word
         endif
 
         if s:is_user_data_support
