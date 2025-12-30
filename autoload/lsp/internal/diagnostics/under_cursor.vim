@@ -43,8 +43,7 @@ function! lsp#internal#diagnostics#under_cursor#_get_closest_diagnostic(diagnost
         let [l:start_line, l:start_col] = lsp#utils#position#lsp_to_vim('%', l:diagnostic['range']['start'])
         let [l:end_line, l:end_col] = lsp#utils#position#lsp_to_vim('%', l:diagnostic['range']['end'])
 
-        if (a:line > l:start_line || (a:line == l:start_line && a:col >= l:start_col)) &&
-              \ (a:line < l:end_line || (a:line == l:end_line && a:col < l:end_col))
+        if (a:line >= l:start_line && a:line <= l:end_line )
             let l:distance = abs(l:start_col - a:col)
             if l:closest_distance < 0 || l:distance < l:closest_distance
                 let l:closest_end_col = l:end_col
